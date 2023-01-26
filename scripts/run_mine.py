@@ -47,10 +47,10 @@ series_params["sacha_18_rel"] = {"input_file": "sacha/data_18-03-22_lagg200NL.tx
 # series_params["sacha_18_abs_2000W"] = {"input_file": "sacha/data_18-03-22_lagg200NL.txt",
 #                                  "timestamp": True, "max_len": 2000, "max_p": 7*24*60}
 
-print("UUUUU UbiqLog_")
+# print("UUUUU UbiqLog_")
 All = glob.glob(DATA_REP+"UbiqLog/prepared/*_data.dat")
 for f in glob.glob(DATA_REP+"UbiqLog/prepared/*_data.dat"):
-    print(f)
+    # print(f)
     bb = f.split("/")[-1].strip("_data.dat")
     if not re.search("ISE", bb):
         series_params["UbiqLog_%s_rel" % bb] = {"filename": f, "timestamp": False}
@@ -65,7 +65,11 @@ def log_write(fo_log, what):
         fo_log.write(what)
 
 
-def bronKerbosch3Plus(graph, collect, P, R=set(), X=set()):
+def bronKerbosch3Plus(graph, collect, P, R=None, X=None):
+    if X is None:
+        X = set()
+    if R is None:
+        R = set()
     if len(P) == 0 and len(X) == 0:
         if len(R) > 2:
             collect.append(R)
@@ -88,7 +92,7 @@ def prepare_pattern_simple(occs, alpha, p0=None, r0=None):
             1: {"event": alpha, "parent": 0}}
     E = [(occs[i]-occs[i-1])-p0 for i in range(1, len(occs))]
     p = Pattern(tree)
-    return (p, occs[0], E)
+    return p, occs[0], E
 
 
 def prepare_candidate_two_nested(P_minor, p0, r0, p1, r1, first_rs):
@@ -292,7 +296,7 @@ def merge_cycle_lists(cyclesL):
         # keys.extend([(":".join(map(str, kk["occs"])), ki, ci) for ki,kk in enumerate(cycles)])
         keys.extend([((kk["occs"][0], len(kk["occs"]), kk["p"]), ki, ci) for ki, kk in enumerate(cycles)])
     keys.sort()
-
+    cycles = []
     if len(keys) > 0:
         cycles = [cyclesL[keys[0][2]][keys[0][1]]]
         cycles[-1]["source"] = (keys[0][2], keys[0][1])
@@ -1179,10 +1183,10 @@ if __name__ == "__main__":
     parser.add_argument("--run_id", type=str, help="run identifier", default=argparse.SUPPRESS)
 
     pargs = vars(parser.parse_args())
-    print("MES ARGS", pargs)
+    # print("MES ARGS", pargs)
     lseries = []
     groupped = ""
-    print(pargs.get("series", []))
+    # print(pargs.get("series", []))
     if len(pargs.get("series", [])) > 0:
         lseries = pargs["series"]
         # if lseries[0] not in series_params and lseries[0] not in ["ALL", "OTHER", "UBIQ_ABS", "UBIQ_REL", "TEST", "SACHA"]:
@@ -1197,15 +1201,14 @@ if __name__ == "__main__":
         if len(lseries) > 0 and re.match("UBIQ_REL", lseries[-1]):
             groupped = lseries[-1]
             lseries = [s for s in series_params.keys() if re.match("UbiqLog_.*_rel", s)]
-            print('BINGO')
         if len(lseries) > 0 and re.match("SACHA", lseries[-1]):
             groupped = lseries[-1]
             lseries = [s for s in series_params.keys() if re.match("sacha_", s)]
-        print(*list(series_params.keys()),sep='\n')
-        print("LSSSERRIES",lseries)
+        # print(*list(series_params.keys()),sep='\n')
+        # print("LSSSERRIES",lseries)
     elif pargs.get("input_file") is not None:
         lseries = [None]
-
+    import tqdm
     run_id = pargs.get("run_id", "")
     if run_id == "_":
         run_id = datetime.datetime.now().strftime("%y%m%d%H%M%S")
@@ -1213,8 +1216,10 @@ if __name__ == "__main__":
         print("RUN_ID: %s" % run_id)
         if not re.match("_", run_id):
             run_id = "_" + run_id
-
-    for series in lseries:
+    N = len(lseries)
+    pbar = tqdm.tqdm(lseries)
+    for series in pbar:
+        # print(f"{idx}/{N} : ")
         if series is None or series in series_params:
             params = dict(pargs)
             if series is not None:
@@ -1244,7 +1249,7 @@ if __name__ == "__main__":
                 disp_seqs(seqs)
             else:
                 fn_basis = "%s%s%s" % (xps_rep, basename, run_id)
-                print("RUNNING %s" % input_name)
+                pbar.set_description("RUNNING %s" % input_name)
                 mine_seqs(seqs, fn_basis, max_p=params.get("max_p"))
         else:
             print("Series %s does not exist!" % series)
