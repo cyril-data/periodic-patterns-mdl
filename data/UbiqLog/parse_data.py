@@ -9,7 +9,17 @@ IN_FILE = "all_log_applications_nonbin.txt"
 users = {}
 users_drop = set()
 with open(IN_FILE) as fp:
+
     for li, line in enumerate(fp):
+        # print(line)
+        line= ('/').join(line.strip().split('/')[1:])
+        # tmp = re.match('([0-9]*_[FM])/log_[0-9\-]+.txt:.*"ProcessName":"([^"]*)",.*"Start":"([^"]*)",.*"End":"([^"]*)"', line)
+        # user = tmp.group(0)
+        # file = tmp.group(1)
+        # process = tmp.group(2)
+        # start_time = tmp.group(3)
+        # end_time = tmp.group(4)
+
         tmp = re.match('(?P<user>[0-9]*_[FM])/(?P<file>log_[0-9\-]+.txt):.*"ProcessName":"(?P<process>[^"]*)",.*"Start":"(?P<start_time>[^"]*)",.*"End":"(?P<end_time>[^"]*)"', line)
         if tmp is not None:
             user = tmp.group("user")
@@ -34,8 +44,8 @@ with open(IN_FILE) as fp:
                 for (tt, ev) in evs:
                     users[user]["ev"].append((tt, ev))
                     users[user]["counts"][ev] = users[user]["counts"].get(ev, 0)+1
-
-print "DROP", users_drop
+print(users)
+print("DROP", users_drop)
 for user, dt in users.items():
     if user not in users_drop:
         evs_tmp = [d for d in dt["ev"] if dt["counts"].get(d[1], 0) > MIN_OCC]
@@ -49,7 +59,6 @@ for user, dt in users.items():
                     if pair != prev:
                         fo.write("%d\t%s\n" % pair)
                         prev = pair
-                    
 
             with open("%s/%s_IS_data.dat" % (OUT_REP, user), "w") as fo:
                 fo.write("### user=%s\tstart_time=%s\n" % (user, evs_tmp[0][0]))

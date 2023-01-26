@@ -1,6 +1,5 @@
 import numpy
 import re
-import pdb
 
 group_patt = "GROUP_%d"
 group_syms = "^*$"
@@ -34,13 +33,14 @@ def readSequence(parameters):
 
     ss = {}
     for sk, s in sequences.items():
-        if len(s) > parameters.get("min_len", 0) and len(s) < parameters.get("max_len", len(s)+1):
+        if parameters.get("min_len", 0) < len(s) < parameters.get("max_len", len(s) + 1):
             ss[sk] = numpy.array(sorted(set(s)))
     return ss
 
 
 def readSequenceSacha(parameters):
     # granularity, only with timestamps
+    print(parameters)
     withI = float(parameters.get("I", False))
     granularity = float(parameters.get("granularity", 1))
     drop_event_codes = parameters.get("drop_event_codes", None)
@@ -78,6 +78,6 @@ def readSequenceSacha(parameters):
 
     ss = {}
     for sk, s in sequences.items():
-        if len(s) > parameters.get("min_len", 0) and len(s) < parameters.get("max_len", len(s)+1):
+        if parameters.get("min_len", 0) < len(s) < parameters.get("max_len", len(s) + 1):
             ss[sk] = numpy.array(sorted(set(s)))
     return ss

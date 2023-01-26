@@ -47,7 +47,10 @@ series_params["sacha_18_rel"] = {"input_file": "sacha/data_18-03-22_lagg200NL.tx
 # series_params["sacha_18_abs_2000W"] = {"input_file": "sacha/data_18-03-22_lagg200NL.txt",
 #                                  "timestamp": True, "max_len": 2000, "max_p": 7*24*60}
 
+print("UUUUU UbiqLog_")
+All = glob.glob(DATA_REP+"UbiqLog/prepared/*_data.dat")
 for f in glob.glob(DATA_REP+"UbiqLog/prepared/*_data.dat"):
+    print(f)
     bb = f.split("/")[-1].strip("_data.dat")
     if not re.search("ISE", bb):
         series_params["UbiqLog_%s_rel" % bb] = {"filename": f, "timestamp": False}
@@ -1176,8 +1179,10 @@ if __name__ == "__main__":
     parser.add_argument("--run_id", type=str, help="run identifier", default=argparse.SUPPRESS)
 
     pargs = vars(parser.parse_args())
+    print("MES ARGS", pargs)
     lseries = []
     groupped = ""
+    print(pargs.get("series", []))
     if len(pargs.get("series", [])) > 0:
         lseries = pargs["series"]
         # if lseries[0] not in series_params and lseries[0] not in ["ALL", "OTHER", "UBIQ_ABS", "UBIQ_REL", "TEST", "SACHA"]:
@@ -1192,9 +1197,12 @@ if __name__ == "__main__":
         if len(lseries) > 0 and re.match("UBIQ_REL", lseries[-1]):
             groupped = lseries[-1]
             lseries = [s for s in series_params.keys() if re.match("UbiqLog_.*_rel", s)]
+            print('BINGO')
         if len(lseries) > 0 and re.match("SACHA", lseries[-1]):
             groupped = lseries[-1]
             lseries = [s for s in series_params.keys() if re.match("sacha_", s)]
+        print(*list(series_params.keys()),sep='\n')
+        print("LSSSERRIES",lseries)
     elif pargs.get("input_file") is not None:
         lseries = [None]
 

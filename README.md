@@ -19,26 +19,25 @@ We evaluate the interest of our approach on several real-world event log dataset
 
 An event log recording daily activities might look like this
 
-Date | Time | Activity
------|------|---------------
-16-04-2018 | 7:30 | wake up 
-16-04-2018 | 7:40 | prepare coffee 
-&nbsp; | ... | &nbsp;
-16-04-2018 | 8:10 | take metro 
-&nbsp; | ... | &nbsp;
-16-04-2018 | 11:00 | attend meeting 
-&nbsp; | ... | &nbsp;
-16-04-2018 | 11:00 | eat dinner 
-&nbsp; | ... | &nbsp;
-17-04-2018 | 7:32 | wake up 
-17-04-2018 | 7:38 | prepare coffee 
-&nbsp; | ... | &nbsp;
-20-04-2018 | 7:28 | wake up 
-20-04-2018 | 7:41 | prepare coffee 
-&nbsp; | ... | &nbsp;
-15-06-2018 | 7:28 | wake up 
-&nbsp; | ... | &nbsp; 
-
+| Date       | Time  | Activity       |
+|------------|-------|----------------|
+| 16-04-2018 | 7:30  | wake up        |
+| 16-04-2018 | 7:40  | prepare coffee |
+| &nbsp;     | ...   | &nbsp;         |
+| 16-04-2018 | 8:10  | take metro     |
+| &nbsp;     | ...   | &nbsp;         |
+| 16-04-2018 | 11:00 | attend meeting |
+| &nbsp;     | ...   | &nbsp;         |
+| 16-04-2018 | 11:00 | eat dinner     |
+| &nbsp;     | ...   | &nbsp;         |
+| 17-04-2018 | 7:32  | wake up        |
+| 17-04-2018 | 7:38  | prepare coffee |
+| &nbsp;     | ...   | &nbsp;         |
+| 20-04-2018 | 7:28  | wake up        |
+| 20-04-2018 | 7:41  | prepare coffee |
+| &nbsp;     | ...   | &nbsp;         |
+| 15-06-2018 | 7:28  | wake up        |
+| &nbsp;     | ...   | &nbsp;         |
 
 A simple periodic pattern of daily activities extracted from this data might look like this...
     
@@ -54,7 +53,7 @@ A simple periodic pattern of daily activities extracted from this data might loo
 
 - The **data** folder contains the datasets used in the experiments or instruction about how to obtain them.
 - The **xps** folder contains the summary of results, a LateX template to produce a report of results, and is meant to receive files produced when running scripts.
-- The **scripts** contains the scripts, for mining as well as for parsing results and preparing figures, tables and examples.
+- The **scripts** contain the scripts, for mining as well as for parsing results and preparing figures, tables and examples.
 
 
 ## Running the experiments
