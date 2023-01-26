@@ -1217,8 +1217,8 @@ if __name__ == "__main__":
         if not re.match("_", run_id):
             run_id = "_" + run_id
     N = len(lseries)
-    pbar = tqdm.tqdm(lseries)
-    for series in pbar:
+
+    for series in (pbar := tqdm.tqdm(lseries)):
         # print(f"{idx}/{N} : ")
         if series is None or series in series_params:
             params = dict(pargs)
