@@ -1,5 +1,7 @@
 import numpy
-import datetime, re, csv
+import datetime
+import re
+import csv
 
 import pdb
 
@@ -14,7 +16,7 @@ time_scale = 60
 
 
 def del_instant(events):
-    ##### DELETE TIME 0
+    # DELETE TIME 0
     i = 0
     while i < len(events):
         if (events[i][0] == events[i][1]):
@@ -24,7 +26,7 @@ def del_instant(events):
 
 
 def merge_samesucc(events):
-    ##### MERGE SUCCESSIVE SAME
+    # MERGE SUCCESSIVE SAME
     i = 0
     while i < len(events) - 1:
         if (events[i][2] == events[i + 1][2]) and (events[i][0] == events[i + 1][1]):
@@ -35,14 +37,15 @@ def merge_samesucc(events):
 
 
 def print_out(events, filename):
-    ##### PRINT OUT
+    # PRINT OUT
     origin = events[-1][0]
     with open(filename, "w") as fo:
         while len(events) > 1:
             ev = events.pop()
             fo.write("%d %d %d %d %s %s\n" % (
-            ev[2], (ev[0] - origin).total_seconds() / time_scale, (ev[1] - origin).total_seconds() / time_scale,
-            (ev[1] - ev[0]).total_seconds() / time_scale, ev[0], ev[3]))
+                ev[2], (ev[0] - origin).total_seconds() /
+                time_scale, (ev[1] - origin).total_seconds() / time_scale,
+                (ev[1] - ev[0]).total_seconds() / time_scale, ev[0], ev[3]))
 
 
 def read_mapp(filename):
@@ -61,11 +64,14 @@ def read_data(filename, mapp):  # FOLDER+FILENAME_DATA
         reader = csv.DictReader(fp)
         for row in reader:
             if len(row["End timestamp"]) > 0 and row["Record category type"] == "activity":
-                t0 = datetime.datetime.strptime(row["Timestamp"], "%B %d, %Y %H:%M")
-                t1 = datetime.datetime.strptime(row["End timestamp"], "%B %d, %Y %H:%M")
+                t0 = datetime.datetime.strptime(
+                    row["Timestamp"], "%B %d, %Y %H:%M")
+                t1 = datetime.datetime.strptime(
+                    row["End timestamp"], "%B %d, %Y %H:%M")
                 activity = re.sub(" ", "", row["Record category"])
                 if activity in mapp:
-                    events.append([t0, t1, mapp[activity][1], mapp[activity][2], mapp[activity][0], activity])
+                    events.append(
+                        [t0, t1, mapp[activity][1], mapp[activity][2], mapp[activity][0], activity])
                 else:
                     missing_act.add(activity)
             # print row["Timestamp"], "->", tt , "---", row["Record category"], row["Record category type"]
@@ -76,8 +82,8 @@ def read_data(filename, mapp):  # FOLDER+FILENAME_DATA
 def aggregate_rare(events, mapp, thres=100, lego=False):
     ids_to_names = dict([(v[1], v[2]) for (k, v) in mapp.items()])
     names_to_ids = dict([(v[2], v[1]) for (k, v) in mapp.items()])
-    nks = names_to_ids.keys()
-    for n in nks:
+
+    for n in dict(names_to_ids):
         pos = [2]
         if re.search("LEGO", n) and lego:
             pos.append(3)
@@ -93,16 +99,20 @@ def aggregate_rare(events, mapp, thres=100, lego=False):
     for (k, v) in occs.items():
         if thres is None or v.shape[0] < thres:
             if re.search("LEGO", ids_to_names[k]) and lego:
-                map_agg[k] = names_to_ids["-".join(ids_to_names[k].split("-")[:3])]
+                map_agg[k] = names_to_ids["-".join(
+                    ids_to_names[k].split("-")[:3])]
             else:
-                map_agg[k] = names_to_ids["-".join(ids_to_names[k].split("-")[:2])]
+                map_agg[k] = names_to_ids["-".join(
+                    ids_to_names[k].split("-")[:2])]
 
     for i in range(len(events)):
         events[i][2] = map_agg.get(events[i][2], events[i][2])
     dt_agg = numpy.array([e[2] for e in events])
-    occs_agg = dict([(v, numpy.where(dt_agg == v)[0]) for v in numpy.unique(dt_agg)])
+    occs_agg = dict([(v, numpy.where(dt_agg == v)[0])
+                    for v in numpy.unique(dt_agg)])
     with open(CODES_OUT, "w") as ff:
-        ff.write("\n".join(["%s\t%s" % (v, k) for (k, v) in names_to_ids.items()]))
+        ff.write("\n".join(["%s\t%s" % (v, k)
+                 for (k, v) in names_to_ids.items()]))
 
     print("--- Aggregated %d -> %d" % (len(occs), len(occs_agg)))
     # print len(occs), sorted([(x[1].shape[0], ids_to_names[x[0]]) for x in occs.items()])
