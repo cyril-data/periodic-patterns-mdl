@@ -1,4 +1,6 @@
-import numpy, re, sys
+import numpy
+import re
+import sys
 import matplotlib
 import matplotlib.pyplot as plt
 import pdb
@@ -22,7 +24,8 @@ CX = "S_nb_cands"
 inters = ["S", "V", "H", "V+H", "F"]
 
 colors_all = ["r", "b", "g", "c", "k"]
-colors_all = ["#332288", "#88CCEE", "#44AA99", "#117733", "#DDCC77", "#CC6677", "#AA4499", "#999933"]
+colors_all = ["#332288", "#88CCEE", "#44AA99", "#117733",
+              "#DDCC77", "#CC6677", "#AA4499", "#999933"]
 colors_all = ["#332288", "#88CCEE", "#44AA99", "#DDCC77", "#CC6677"]
 
 DT_NAMES_SHORT = {"3zap-0-rel": "3zap-0",
@@ -67,7 +70,8 @@ with open(FILE_IN) as fp:
 if True:
     map_field_num = dict([(v, k - 1) for (k, v) in enumerate(head)])
     X = numpy.loadtxt(FILE_IN, usecols=range(1, len(head)), skiprows=1)
-    Urids = [r for r in range(len(rlabels)) if re.match("Ubi.*abs", rlabels[r])]
+    Urids = [r for r in range(len(rlabels))
+             if re.match("Ubi.*abs", rlabels[r])]
     rids = [r for r in range(len(rlabels)) if not re.match("Ubi", rlabels[r]) and (
             not re.match("sacha.*G", rlabels[r]) or re.match("sacha.*G15", rlabels[r])) and not re.search("_1_rel",
                                                                                                           rlabels[
@@ -91,20 +95,25 @@ if True:
 
         # plt.scatter(X[Urids,map_field_num["size_O"]], X[Urids,map_field_num["runtime_mining"]], c=numpy.log10(X[Urids,map_field_num[CC]]), s=mmsize+80*X[Urids,map_field_num[CX]]/max_CX, marker='o', cmap=CMAP_NBC, zorder=20, vmin=min_CC, vmax=max_CC)
         # plt.scatter(X[rids,map_field_num["size_O"]], X[rids,map_field_num["runtime_mining"]], c=numpy.log10(X[rids,map_field_num[CC]]), s=mmsize+80*X[rids,map_field_num[CX]]/max_CX, marker='s', cmap=CMAP_NBC, zorder=20, vmin=min_CC, vmax=max_CC)
-        plt.plot(X[Urids, map_field_num["size_O"]], X[Urids, map_field_num["runtime_mining"]], "ko")
-        plt.plot(X[rids, map_field_num["size_O"]], X[rids, map_field_num["runtime_mining"]], "ko")
+        plt.plot(X[Urids, map_field_num["size_O"]],
+                 X[Urids, map_field_num["runtime_mining"]], "ko")
+        plt.plot(X[rids, map_field_num["size_O"]],
+                 X[rids, map_field_num["runtime_mining"]], "ko")
 
         if sc == "h":
-            plt.plot([-1000, -1000, 45000, 45000], [-100, 3700, 3700, -100], "--", color="darkgray")
+            plt.plot([-1000, -1000, 45000, 45000],
+                     [-100, 3700, 3700, -100], "--", color="darkgray")
             plt.xlim([-1000, 195000])
             plt.ylim([-100, 10.5 * 3600])
             ycmin, ycmax = plt.ylim()
-            plt.yticks(numpy.arange(0, ycmax, 3600), ["% 4d" % v for v in numpy.arange(0, ycmax / 3600)])
+            plt.yticks(numpy.arange(0, ycmax, 3600), [
+                       "% 4d" % v for v in numpy.arange(0, ycmax / 3600)])
         else:
             plt.xlim([-1000, 45000])
             plt.ylim([-100, 3700])
             ycmin, ycmax = plt.ylim()
-            plt.yticks(numpy.arange(0, ycmax, 600), ["% 4d" % v for v in numpy.arange(0, ycmax / 60, 10)])
+            plt.yticks(numpy.arange(0, ycmax, 600), [
+                       "% 4d" % v for v in numpy.arange(0, ycmax / 60, 10)])
 
         plt.ylabel("RT (%s)" % {"m": "min"}.get(sc, sc))
         plt.xlabel("|S|")
@@ -142,7 +151,8 @@ if True:
             plt.figure(figsize=(6, 4))
         for rid in range(len(rlabels)):
             plt.plot([X[rid, map_field_num["size_O"]], X[rid, map_field_num["size_O"]]],
-                     [X[rid, map_field_num["runtime_combine"]], X[rid, map_field_num["runtime_mining"]]], ":k",
+                     [X[rid, map_field_num["runtime_combine"]],
+                         X[rid, map_field_num["runtime_mining"]]], ":k",
                      zorder=5)
 
         plt.scatter(X[Urids, map_field_num["size_O"]], X[Urids, map_field_num["runtime_mining"]],
@@ -171,20 +181,25 @@ if True:
             cb.set_label("$c^+$")
 
         if sc == "h":
-            plt.plot([-1000, -1000, 22000, 22000], [-100, 1300, 1300, -100], "--", color="darkgray", zorder=30)
-            plt.plot([-1000, -1000, 45000, 45000], [-100, 3700, 3700, -100], "--", color="darkgray", zorder=30)
+            plt.plot([-1000, -1000, 22000, 22000], [-100, 1300,
+                     1300, -100], "--", color="darkgray", zorder=30)
+            plt.plot([-1000, -1000, 45000, 45000], [-100, 3700,
+                     3700, -100], "--", color="darkgray", zorder=30)
 
             plt.xlim([-1000, 195000])
             plt.ylim([-100, 10.5 * 3600])
             ycmin, ycmax = plt.ylim()
-            plt.yticks(numpy.arange(0, ycmax, 3600), ["% 4d" % v for v in numpy.arange(0, ycmax / 3600)])
+            plt.yticks(numpy.arange(0, ycmax, 3600), [
+                       "% 4d" % v for v in numpy.arange(0, ycmax / 3600)])
 
         elif sc == "m":
-            plt.plot([-1000, -1000, 22000, 22000], [-100, 1300, 1300, -100], "--", color="darkgray", zorder=30)
+            plt.plot([-1000, -1000, 22000, 22000], [-100, 1300,
+                     1300, -100], "--", color="darkgray", zorder=30)
             plt.xlim([-1000, 45000])
             plt.ylim([-100, 3700])
             ycmin, ycmax = plt.ylim()
-            plt.yticks(numpy.arange(0, ycmax, 600), ["% 4d" % v for v in numpy.arange(0, ycmax / 60, 10)])
+            plt.yticks(numpy.arange(0, ycmax, 600), [
+                       "% 4d" % v for v in numpy.arange(0, ycmax / 60, 10)])
 
         else:
             plt.xlim([-1000, 22000])
@@ -204,7 +219,8 @@ if True:
 
 
 ucols = [ci for ci in range(len(head)) if re.search("prc_cl", head[ci])]
-map_inter_to_cid = dict([(v, k) for (k, v) in enumerate([head[ci].split("_")[0] for ci in ucols])])
+map_inter_to_cid = dict([(v, k) for (k, v) in enumerate(
+    [head[ci].split("_")[0] for ci in ucols])])
 Xorg = numpy.loadtxt(FILE_IN, usecols=ucols, skiprows=1)
 
 scols = [ci for ci in range(len(head)) if re.search("size_O", head[ci])]
@@ -217,16 +233,17 @@ rids.sort(key=lambda x: -Sorg[x])
 groups.append({"title": "UbiqLog ISE Abs", "inter": ["S", "F"], "rids": rids,
                "rlabels": [rlabels[r] for r in rids]})
 
-groups.append({"title": "UbiqLog ISE Abs 2-2", "inter": ["S", "F"], "rids": rids[len(rids) / 2:],
-               "rlabels": [rlabels[r] for r in rids[len(rids) / 2:]]})
-groups.append({"title": "UbiqLog ISE Abs 1-2", "inter": ["S", "F"], "rids": rids[:len(rids) / 2],
-               "rlabels": [rlabels[r] for r in rids[:len(rids) / 2]]})
+groups.append({"title": "UbiqLog ISE Abs 2-2", "inter": ["S", "F"], "rids": rids[int(len(rids) / 2):],
+               "rlabels": [rlabels[r] for r in rids[int(len(rids) / 2):]]})
+groups.append({"title": "UbiqLog ISE Abs 1-2", "inter": ["S", "F"], "rids": rids[:int(len(rids) / 2)],
+               "rlabels": [rlabels[r] for r in rids[:int(len(rids) / 2)]]})
 
 rids = [r for r in range(len(rlabels)) if re.match("Ubi.*IS_rel", rlabels[r])]
 rids.sort(key=lambda x: -Sorg[x])
 groups.append({"title": "UbiqLog IS Rel", "inter": ["S", "F"], "rids": rids,
                "rlabels": [rlabels[r] for r in rids]})
-rids = [r for r in range(len(rlabels)) if not re.match("Ubi.*", rlabels[r]) and not re.match("sacha", rlabels[r])][::-1]
+rids = [r for r in range(len(rlabels)) if not re.match(
+    "Ubi.*", rlabels[r]) and not re.match("sacha", rlabels[r])][::-1]
 groups.append({"title": "Other", "rids": rids,
                "rlabels": [rlabels[r] for r in rids]})
 
@@ -268,9 +285,10 @@ for group in groups:
     if re.search("-2$", group["title"]):
         plt.subplots_adjust(bottom=0.14, top=.92)
     plt.draw()
-    plt.savefig("%s_prcCL_%s.pdf" % (BASIS_OUT, re.sub(" ", "", group["title"])))
+    plt.savefig("%s_prcCL_%s.pdf" %
+                (BASIS_OUT, re.sub(" ", "", group["title"])))
 
-####################### SACHA
+# SACHA
 head = None
 rlabels = []
 with open(FILE_IN_SACHA) as fp:
@@ -281,7 +299,8 @@ with open(FILE_IN_SACHA) as fp:
             rlabels.append(line.split()[0])
 
 ucols = [ci for ci in range(len(head)) if re.search("prc_cl", head[ci])]
-map_inter_to_cid = dict([(v, k) for (k, v) in enumerate([head[ci].split("_")[0] for ci in ucols])])
+map_inter_to_cid = dict([(v, k) for (k, v) in enumerate(
+    [head[ci].split("_")[0] for ci in ucols])])
 Xorg = numpy.loadtxt(FILE_IN_SACHA, usecols=ucols, skiprows=1)
 
 bar_labels = [re.sub("_prc_cl", "", head[ui]) for ui in ucols]
@@ -290,8 +309,8 @@ groups = []
 rids = [r for r in range(len(rlabels)) if re.match("sacha", rlabels[r])]
 skeys = dict([(rid, (
     int((rlabels[rid] + "G9999").split("G")[1].split("_")[0]), "2000" not in rlabels[rid], "absI" not in rlabels[rid]))
-              for
-              rid in rids])
+    for
+    rid in rids])
 rids.sort(key=lambda x: skeys[x], reverse=True)
 groups.append({"title": "Sacha", "inter": ["S", "F"], "rids": rids,
                "rlabels": [re.sub("2000", "S", re.sub("_v[0-9]*", "", re.sub("sacha_18_", "", rlabels[r]))) for r in
@@ -325,4 +344,5 @@ for group in groups:
     plt.legend(loc=4, frameon=False)
     plt.subplots_adjust(bottom=0.32, top=0.95)
     plt.draw()
-    plt.savefig("%s_prcCL_%s.pdf" % (BASIS_OUT, re.sub(" ", "", group["title"])))
+    plt.savefig("%s_prcCL_%s.pdf" %
+                (BASIS_OUT, re.sub(" ", "", group["title"])))
