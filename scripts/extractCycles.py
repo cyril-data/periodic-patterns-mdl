@@ -20,7 +20,8 @@ def make_solution(dets, alpha):
         if ci == -1 or len(d[0]) < 3:
             uncovered.update(d[0])
         else:
-            solution.append({"alpha": alpha, "occs": d[0], "p": d[-1]["period"]})
+            solution.append(
+                {"alpha": alpha, "occs": d[0], "p": d[-1]["period"]})
 
     solution.sort(key=lambda x: x["occs"][0])
     if len(uncovered) > 0:
@@ -49,14 +50,16 @@ def recover_splits_rec_ov(spoints, ia, iz, depth=0):
 
 def compute_table_dyn_ov(occs, alpha, data_details):
     ilast = len(occs)
-    score_res = computeLengthResidual(data_details, {"alpha": alpha, "occs": [0]})
+    score_res = computeLengthResidual(
+        data_details, {"alpha": alpha, "occs": [0]})
     scores = {}
     spoints = {}
 
     for ia in range(ilast - 2):
         iz = ia+2
-        score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [occs[i] for i in range(ia, iz+1)]})
-        #print("+ Test-3\t", ia, ia, iz, "\t", score_best, 3*score_res )
+        score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [
+                                        occs[i] for i in range(ia, iz+1)]})
+        # print("+ Test-3\t", ia, ia, iz, "\t", score_best, 3*score_res )
         if score_best < 3*score_res:
             scores[(ia, iz)] = score_best
             spoints[(ia, iz)] = None
@@ -67,12 +70,13 @@ def compute_table_dyn_ov(occs, alpha, data_details):
     for k in range(3, ilast):
         for ia in range(ilast - k):
             iz = ia+k
-            score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [occs[i] for i in range(ia, iz+1)]})
+            score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [
+                                            occs[i] for i in range(ia, iz+1)]})
             spoint_best = None
-            #print("+ Test\t", ia, ia, iz, "\t", score_best)
+            # print("+ Test\t", ia, ia, iz, "\t", score_best)
 
             for im in range(ia+1, iz):
-                ## print("- Test", ia, im, iz)
+                # print("- Test", ia, im, iz)
                 if im-ia <= 2:
                     score_left = score_res*(im-ia+1)
                 else:
@@ -115,14 +119,16 @@ def recover_splits_rec(spoints, ia, iz, depth=0, singletons=True):
 
 def compute_table_dyn(occs, alpha, data_details):
     ilast = len(occs)
-    score_res = computeLengthResidual(data_details, {"alpha": alpha, "occs": [0]})
+    score_res = computeLengthResidual(
+        data_details, {"alpha": alpha, "occs": [0]})
     scores = {}
     spoints = {}
 
     for ia in range(ilast - 2):
         iz = ia+2
-        score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [occs[i] for i in range(ia, iz+1)]})
-        #print("+ Test-3\t", ia, ia, iz, "\t", score_best, 3*score_res )
+        score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [
+                                        occs[i] for i in range(ia, iz+1)]})
+        # print("+ Test-3\t", ia, ia, iz, "\t", score_best, 3*score_res )
         if score_best < 3*score_res:
             scores[(ia, iz)] = score_best
             spoints[(ia, iz)] = None
@@ -135,9 +141,10 @@ def compute_table_dyn(occs, alpha, data_details):
         for ia in range(ilast - k):
             iz = ia+k
 
-            score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [occs[i] for i in range(ia, iz+1)]})
+            score_best = computeLengthCycle(data_details, {"p": None, "alpha": alpha, "occs": [
+                                            occs[i] for i in range(ia, iz+1)]})
             spoint_best = None
-            #print("+ Test\t", ia, ia, iz, "\t", score_best)
+            # print("+ Test\t", ia, ia, iz, "\t", score_best)
 
             for im in range(ia, iz):
                 if im-ia+1 <= 2:
@@ -205,11 +212,13 @@ def compute_cycles_dyn(occs, alpha, data_details, residuals=True):
             next_block = occs[pstart:pstart+DYN_BLOCK_SIZE]
             blast = len(next_block)
 
-            scores, spoints = compute_table_dyn(next_block, alpha, data_details)
+            scores, spoints = compute_table_dyn(
+                next_block, alpha, data_details)
             bsplits = recover_splits_rec(spoints, 0, blast-1, singletons=False)
             adj_splits = [(ia+pstart, iz+pstart) for (ia, iz) in bsplits]
 
-            costs.update(dict([((ia+pstart, iz+pstart), scores[(ia, iz)]) for (ia, iz) in bsplits]))
+            costs.update(
+                dict([((ia+pstart, iz+pstart), scores[(ia, iz)]) for (ia, iz) in bsplits]))
             splits = combine_splits(splits, adj_splits)
 
             pstart += STEP_SIZE
@@ -227,7 +236,8 @@ def compute_cycles_dyn(occs, alpha, data_details, residuals=True):
             if s in costs:
                 cst = costs[s]
             else:
-                cst = computeLengthCycle(data_details, {"p": prd, "alpha": alpha, "occs": cov})
+                cst = computeLengthCycle(
+                    data_details, {"p": prd, "alpha": alpha, "occs": cov})
             cycles.append({"alpha": alpha, "occs": cov, "p": prd, "cost": cst})
             covered.update(cov)
 
@@ -285,8 +295,9 @@ def select_triples(triples, cycles, covered, occs, alpha):
     for t in triples:
         if len(covered.intersection(t[-1])) == 0:
             covered.update(t[-1])
-            cycles.append({"alpha": alpha, "occs": [occs[tt] for tt in t[-1]], "p": None})
-    #print("--- t:", datetime.datetime.now()-tic)
+            cycles.append({"alpha": alpha, "occs": [
+                          occs[tt] for tt in t[-1]], "p": None})
+    # print("--- t:", datetime.datetime.now()-tic)
     return cycles
 
 
@@ -294,9 +305,11 @@ def extract_cycles_fold(occs, alpha, data_details, bound_dE, eff_trip, eff_chain
     if len(occs) < 2000:
         return extract_cycles_fold_sub(occs, alpha, data_details, bound_dE, eff_trip, eff_chain, max_p=max_p)
     else:
-        chains, triples = extract_cycles_fold_sub(occs[:1500], alpha, data_details, bound_dE, eff_trip, eff_chain, max_p=max_p)
-        for i in range(1, len(occs)/1500):
-            chains_tmp, triples_tmp = extract_cycles_fold_sub(occs[i*1500:(i+1)*1500], alpha, data_details, bound_dE, eff_trip, eff_chain, i*1500, max_p=max_p)
+        chains, triples = extract_cycles_fold_sub(
+            occs[:1500], alpha, data_details, bound_dE, eff_trip, eff_chain, max_p=max_p)
+        for i in range(1, int(len(occs)/1500)):
+            chains_tmp, triples_tmp = extract_cycles_fold_sub(
+                occs[i*1500:(i+1)*1500], alpha, data_details, bound_dE, eff_trip, eff_chain, i*1500, max_p=max_p)
             chains.extend(chains_tmp)
             triples.extend(triples_tmp)
         return chains, triples
@@ -366,14 +379,17 @@ def extract_cycles_fold_sub(occs, alpha, data_details, bound_dE, eff_trip, eff_c
                         seen_ps.append(dp)
                         if (i-ib-1, i) not in pairs_chain_fwd:
                             if (i-ib-1, i) in pairs_chain_test:
-                                pairs_chain_fwd[(i-ib-1, i)] = (deltaE, dp, i+ia+1)
-                                pairs_chain_bck[(i-ib-1, i)] = pairs_chain_test.pop((i-ib-1, i))[:-1]
+                                pairs_chain_fwd[(i-ib-1, i)
+                                                ] = (deltaE, dp, i+ia+1)
+                                pairs_chain_bck[(
+                                    i-ib-1, i)] = pairs_chain_test.pop((i-ib-1, i))[:-1]
 
                         elif pairs_chain_fwd[(i-ib-1, i)][0] > deltaE:
                             pairs_chain_fwd[(i-ib-1, i)] = (deltaE, dp, i+ia+1)
 
                         if (i, i+ia+1) not in pairs_chain_test or pairs_chain_test[(i, i+ia+1)][0] > deltaE:
-                            pairs_chain_test[(i, i+ia+1)] = (deltaE, dp, i-ib-1, costC)
+                            pairs_chain_test[(i, i+ia+1)
+                                             ] = (deltaE, dp, i-ib-1, costC)
 
                 ia += 1
                 ib += 1
@@ -381,8 +397,10 @@ def extract_cycles_fold_sub(occs, alpha, data_details, bound_dE, eff_trip, eff_c
             # print(len(pairs_chain_test))
             # triples.extend([(v[0], v[1], (v[-1], k[0], k[1])) for (k,v) in pairs_chain_test.items() if k[1] < i])
             # triples_tmp: (i, ia) -> (deltaE, prd, ib, cost)
-            triples_tmp.update(dict([(k, v) for (k, v) in pairs_chain_test.items() if k[1] < i]))
-            pairs_chain_test = dict([(k, v) for (k, v) in pairs_chain_test.items() if k[1] >= i])
+            triples_tmp.update(
+                dict([(k, v) for (k, v) in pairs_chain_test.items() if k[1] < i]))
+            pairs_chain_test = dict(
+                [(k, v) for (k, v) in pairs_chain_test.items() if k[1] >= i])
             # print(len(pairs_chain_test))
 
     # triples.extend([(v[0], v[1], (v[-1], k[0], k[1])) for (k,v) in pairs_chain_test.items()])
@@ -410,15 +428,18 @@ def extract_cycles_fold_sub(occs, alpha, data_details, bound_dE, eff_trip, eff_c
 
         occs_chain = [occs[c] for c in current]
         prd = computePeriod(occs_chain)
-        cost = computeLengthCycle(data_details, {"p": prd, "alpha": alpha, "occs": occs_chain})
+        cost = computeLengthCycle(
+            data_details, {"p": prd, "alpha": alpha, "occs": occs_chain})
         if (eff_chain < 0 and cost < (-eff_chain)*(len(occs_chain)-1)) or (cost/len(occs_chain) < eff_chain):
-            chains.append({"alpha": alpha, "p": prd, "cost": cost, "pos": current, "occs": occs_chain, "uncov": set(current)})
+            chains.append({"alpha": alpha, "p": prd, "cost": cost,
+                          "pos": current, "occs": occs_chain, "uncov": set(current)})
     # print(numpy.bincount([len(cc["pos"]) for cc in chains]))
-    ## triples: (deltaE, prd, cost, (ib, i, ia))
+    # triples: (deltaE, prd, cost, (ib, i, ia))
 
     # if (occs[i-ib-1], occs[i], occs[i+ia+1]) == (18125, 508285, 901652):
     # if (v[-2]+offset, k[0]+offset, k[1]+offset) == (3167, 3302, 3440): pdb.set_trace()
-    triples = [(v[0], v[1], v[-1], (v[-2]+offset, k[0]+offset, k[1]+offset)) for (k, v) in triples_tmp.items() if (eff_trip < 0 and v[-1] < -2*eff_trip) or (v[-1]/3. < eff_trip)]
+    triples = [(v[0], v[1], v[-1], (v[-2]+offset, k[0]+offset, k[1]+offset)) for (k, v)
+               in triples_tmp.items() if (eff_trip < 0 and v[-1] < -2*eff_trip) or (v[-1]/3. < eff_trip)]
     # print("--- t:", datetime.datetime.now()-tic)
     # tic = datetime.datetime.now()
     return chains, triples
@@ -427,7 +448,8 @@ def extract_cycles_fold_sub(occs, alpha, data_details, bound_dE, eff_trip, eff_c
 def compute_cycles_fold(occs, alpha, data_details, residuals=True, inc_triples=True):
     costOne = cost_one(data_details, alpha)
     bound_dE = numpy.log2(data_details["deltaT"]+1) - 2
-    chains, triples = extract_cycles_fold(occs, alpha, data_details, bound_dE, costOne, costOne)
+    chains, triples = extract_cycles_fold(
+        occs, alpha, data_details, bound_dE, costOne, costOne)
     cycles = []
     covered = set()
     select_chains(chains, cycles, covered, occs, alpha, 3*costOne)
@@ -450,11 +472,13 @@ def run_test(occs, alpha, data_details, dets=None):
     results = []
     noc_cycl = [{"alpha": alpha, "occs": occs}]
     noc_cost = computeLengthRC(data_details, noc_cycl)
-    results.append({"meth": "no cycles", "CL": noc_cost, "RT": 0, "cycles": noc_cycl})
+    results.append({"meth": "no cycles", "CL": noc_cost,
+                   "RT": 0, "cycles": noc_cycl})
 
     noc_cycl = [{"alpha": alpha, "occs": occs, "p": None}]
     noc_cost = computeLengthRC(data_details, noc_cycl)
-    results.append({"meth": "one cycle", "CL": noc_cost, "RT": 0, "cycles": noc_cycl})
+    results.append({"meth": "one cycle", "CL": noc_cost,
+                   "RT": 0, "cycles": noc_cycl})
 
     # if dets is not None:
     #     sol = make_solution(dets, alpha)
@@ -467,7 +491,8 @@ def run_test(occs, alpha, data_details, dets=None):
     # print("DYN:", dyn_cycles)
     elsp_dyn = datetime.datetime.now()-tic
     dyn_cost = computeLengthRC(data_details, dyn_cycles)
-    results.append({"meth": "segments", "CL": dyn_cost, "RT": elsp_dyn.total_seconds(), "cycles": dyn_cycles})
+    results.append({"meth": "segments", "CL": dyn_cost,
+                   "RT": elsp_dyn.total_seconds(), "cycles": dyn_cycles})
 
     # tic = datetime.datetime.now()
     # fld_cycles = compute_cycles_fld(occs, alpha, deltaT, nbOccs)
@@ -481,7 +506,8 @@ def run_test(occs, alpha, data_details, dets=None):
     # print("FLD:", fld_cycles)
     elsp_fold = datetime.datetime.now()-tic
     fold_cost = computeLengthRC(data_details, fold_cycles)
-    results.append({"meth": "folding", "CL": fold_cost, "RT": elsp_fold.total_seconds(), "cycles": fold_cycles})
+    results.append({"meth": "folding", "CL": fold_cost,
+                   "RT": elsp_fold.total_seconds(), "cycles": fold_cycles})
 
     return results
 
@@ -584,11 +610,14 @@ if __name__ == "__main__":
         results = run_test(seq, "a", data_details, dets)
         for result in results:
             nb_cycl = len([c for c in result["cycles"] if c.get("cp") > 0])
-            nb_res = numpy.sum([len(c["occs"]) for c in result["cycles"] if c.get("cp") <= 0])
+            nb_res = numpy.sum([len(c["occs"])
+                               for c in result["cycles"] if c.get("cp") <= 0])
 
-            print("%s:\tCL=%f nC=%d nR=%d RT=%f" % (result["meth"], result["CL"], nb_cycl, nb_res, result["RT"]))
+            print("%s:\tCL=%f nC=%d nR=%d RT=%f" %
+                  (result["meth"], result["CL"], nb_cycl, nb_res, result["RT"]))
 
             if len(result["cycles"]) > 0 and result["RT"] > 0:
                 for c in result["cycles"]:
                     if c.get("cp") > 0:
-                        print("\tp=%d\tr=%d\t%s" % (c.get("cp"), len(c["occs"]), c["occs"]))
+                        print("\tp=%d\tr=%d\t%s" %
+                              (c.get("cp"), len(c["occs"]), c["occs"]))

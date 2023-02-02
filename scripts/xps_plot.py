@@ -10,8 +10,8 @@ if len(sys.argv) > 1:
     SERIES = sys.argv[1]
 
 XPS_REP = "../xps/"
-FILE_IN = XPS_REP + "runs_results_%s.csv" % SERIES
-FILE_IN_SACHA = XPS_REP + "runs_results_%s.csv" % SERIES
+FILE_IN = XPS_REP + "%s" % SERIES
+FILE_IN_SACHA = XPS_REP + "%s" % SERIES
 
 BASIS_OUT = XPS_REP + "fig"
 
@@ -77,8 +77,11 @@ if True:
                                                                                                           rlabels[
                                                                                                               r])]
     Arids = range(len(rlabels))
+    if X.ndim == 1:
+        X = numpy.expand_dims(X, axis=0)
 
     max_CX = numpy.max(X[Arids, map_field_num[CX]])
+
     max_CC = 4.2  # numpy.log10(numpy.max(X[Arids,map_field_num[CC]]))
     min_CC = .8  # numpy.log10(numpy.min(X[Arids,map_field_num[CC]]))
     font = {'size': 22}
@@ -95,6 +98,7 @@ if True:
 
         # plt.scatter(X[Urids,map_field_num["size_O"]], X[Urids,map_field_num["runtime_mining"]], c=numpy.log10(X[Urids,map_field_num[CC]]), s=mmsize+80*X[Urids,map_field_num[CX]]/max_CX, marker='o', cmap=CMAP_NBC, zorder=20, vmin=min_CC, vmax=max_CC)
         # plt.scatter(X[rids,map_field_num["size_O"]], X[rids,map_field_num["runtime_mining"]], c=numpy.log10(X[rids,map_field_num[CC]]), s=mmsize+80*X[rids,map_field_num[CX]]/max_CX, marker='s', cmap=CMAP_NBC, zorder=20, vmin=min_CC, vmax=max_CC)
+
         plt.plot(X[Urids, map_field_num["size_O"]],
                  X[Urids, map_field_num["runtime_mining"]], "ko")
         plt.plot(X[rids, map_field_num["size_O"]],
@@ -133,7 +137,8 @@ if True:
     Urids = [r for r in range(len(rlabels)) if re.match("Ubi", rlabels[r])]
     rids = [r for r in range(len(rlabels)) if not re.match("Ubi", rlabels[r])]
     Arids = range(len(rlabels))
-
+    if X.ndim == 1:
+        X = numpy.expand_dims(X, axis=0)
     max_CX = numpy.max(X[Arids, map_field_num[CX]])
     max_CC = 4.2  # numpy.log10(numpy.max(X[Arids,map_field_num[CC]]))
     min_CC = .8  # numpy.log10(numpy.min(X[Arids,map_field_num[CC]]))
@@ -254,7 +259,10 @@ for group in groups:
         font = {'size': 20}
         matplotlib.rc('font', **font)
 
+    if Xorg.ndim == 1:
+        Xorg = numpy.expand_dims(Xorg, axis=0)
     X = Xorg[group["rids"], :]
+
     colors = colors_all
     blabels = bar_labels
     if "inter" in group:
@@ -320,6 +328,9 @@ font = {'size': 12}
 matplotlib.rc('font', **font)
 
 for group in groups:
+
+    if Xorg.ndim == 1:
+        Xorg = numpy.expand_dims(Xorg, axis=0)
     X = Xorg[group["rids"], :]
     colors = colors_all
     blabels = bar_labels

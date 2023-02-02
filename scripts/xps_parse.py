@@ -13,9 +13,9 @@ if len(sys.argv) > 1:
 
 XPS_REP = "../xps/"
 XPS_SUB = "runs/"
-LOG_MATCH = "*%s_log.txt" % SERIES
+LOG_MATCH = "*%s_log.txt*" % SERIES
 PATT_MATCH = "_patt*.txt"
-OUT_FILE = "runs_results_%s.csv" % SERIES
+OUT_FILE = "%s.csv" % SERIES
 
 INTERMS = [('F', 'patts', 'Final'), ('S', 'patts-simple', 'Simple'),
            ('V', 'patts-simple+V', 'Simple+V'), ('H', 'patts-simple+H', 'Simple+H'),
@@ -176,13 +176,8 @@ def format_stats_row(basis, times, selects, more_stats, inter_dt, add_stats=[]):
 fo = open(XPS_REP + OUT_FILE, "w")
 add_stats = None
 
-print("glob.glob(XPS_REP + XPS_SUB + LOG_MATCH)",
-      glob.glob(XPS_REP + XPS_SUB + LOG_MATCH), XPS_REP + XPS_SUB + LOG_MATCH)
-
 for fn in sorted(glob.glob(XPS_REP + XPS_SUB + LOG_MATCH)):
-    print("fn", fn)
     tmp = re.search("/(?P<basis>[^/]*)_log.txt", fn)
-    print("tmp", tmp)
     if tmp is not None:
         basis = tmp.group("basis")
         times, selects, more_stats = parse_log_times(fn)

@@ -6,8 +6,12 @@ group_syms = "^*$"
 
 
 def readSequence(parameters):
+    sequences = dict([(group_patt % pi, []) for pi, p in enumerate(
+        parameters.get("events", [])) if all([sym in p for sym in group_syms])])
 
-    sequences = dict([(group_patt % pi, []) for pi, p in enumerate(parameters.get("events", [])) if all([sym in p for sym in group_syms])])
+    print("group_patt", group_patt)
+    print("group_syms", group_syms)
+    print("sequences", sequences)
     li = 0
     if "filename" in parameters:
         with open(parameters["filename"]) as fp:
@@ -45,7 +49,14 @@ def readSequenceSacha(parameters):
     granularity = float(parameters.get("granularity", 1))
     drop_event_codes = parameters.get("drop_event_codes", None)
 
-    sequences = dict([(pi, []) for pi, p in enumerate(parameters["events"])])
+    print("parameters", parameters)
+
+    if "events" in parameters:
+        sequences = dict([(pi, [])
+                         for pi, p in enumerate(parameters["events"])])
+    else:
+        sequences = {}
+
     li = 0
     if "filename" in parameters:
         with open(parameters["filename"]) as fp:
@@ -59,18 +70,21 @@ def readSequenceSacha(parameters):
                     event_code = int(k)
                     if drop_event_codes is None or event_code not in drop_event_codes:
                         if parameters.get("timestamp", True):
-                            t_start, t_end, t_delta = (int(parts[1]), int(parts[2]), int(parts[3]))
+                            t_start, t_end, t_delta = (
+                                int(parts[1]), int(parts[2]), int(parts[3]))
                             if withI and t_delta < granularity:
                                 kk = "%s_I" % k
                                 if kk not in sequences:
                                     sequences[kk] = []
-                                sequences[kk].append(int(int(t_start)/granularity))
+                                sequences[kk].append(
+                                    int(int(t_start)/granularity))
                             else:
                                 for (suff, tt) in [("S", t_start), ("E", t_end)]:
                                     kk = "%s_%s" % (k, suff)
                                     if kk not in sequences:
                                         sequences[kk] = []
-                                    sequences[kk].append(int(int(tt)/granularity))
+                                    sequences[kk].append(
+                                        int(int(tt)/granularity))
                         else:
                             if k not in sequences:
                                 sequences[k] = []

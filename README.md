@@ -70,17 +70,29 @@ A simple periodic pattern of daily activities extracted from this data might loo
 
 3. Parse the result files to produce the summary file:
 
-    ```
+    ```bash
     python xps_parse.py vX
-    ```
     
+    # so : 
+
+    python xps_parse.py bugzilla_0_rel_all # to parse *bugzilla_0_rel_all_log.txt*)
+
+    ```
+
     will create a file called `run_results_vX.csv` in the xps folder.
 
 4. Produce the tables and plots to visualize the results of the real-world sequence experiments:
 
-    ```
-    python xps_plot.py vX
+    ```bash
+    python xps_plot.py filename*
+    #so
+    python xps_plot.py bugzilla_0_rel_all.csv # to plot *bugzilla_0_rel_all.csv*)
+
+
+
     python xps_tables.py vX
+    #so
+    python xps_tables.py bugzilla_0_rel_all.csv # to make tables from *runs_results_bugzilla_0_rel_all.csv*)
     ```
 
 5. Parse results from sacha to turn ids to text and timestamps to date and time:
